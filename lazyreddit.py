@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import reddit, ConfigParser, email
 from subprocess import call
@@ -16,10 +17,13 @@ r = reddit.Reddit(user_agent="lazyreddit")
 # parse subreddits further
 
 subreddits = [y.strip().lower() for y in subreddits.split(',')]
+u = unicode('s', "utf-8")
+submissions = {}
+for index in range(len(subreddits)):
+    submissions[subreddits[index]] = [str(x) for x in r.get_subreddit(subreddits[index]).get_top(limit=10)]
 
-i = 0
-for i in range(len(subreddits)):
-    submissions = list(r.get_subreddit(subreddits[i]).get_top(limit=10))
-    i += 1
+for k, v in submissions.iteritems():
+	print k,v
 
-print submissions[1]
+for index in range(len(subreddits)):
+	print 'Subreddit', subreddits[index]
