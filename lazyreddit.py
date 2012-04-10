@@ -22,6 +22,7 @@ submissions = {}
 for index in range(len(subreddits)):
     submissions[subreddits[index]] = [str(x) for x in r.get_subreddit(subreddits[index]).get_top(limit=10)]
 
+# Code below is for debugging purposes
 for k, v in submissions.iteritems():
 	print k,v
 
