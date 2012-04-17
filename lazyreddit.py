@@ -17,7 +17,6 @@ r = reddit.Reddit(user_agent="lazyreddit")
 # parse subreddits further
 
 subreddits = [y.strip().lower() for y in subreddits.split(',')]
-u = unicode('s', "utf-8")
 submissions = {}
 for index in range(len(subreddits)):
     submissions[subreddits[index]] = [str(x) for x in r.get_subreddit(subreddits[index]).get_top(limit=10)]
