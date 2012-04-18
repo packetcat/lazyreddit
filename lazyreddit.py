@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import reddit, ConfigParser, email
+import reddit, ConfigParser, smtplib, socket, datetime
 from subprocess import call
 
 # Read config file
@@ -21,9 +21,31 @@ submissions = {}
 for index in range(len(subreddits)):
     submissions[subreddits[index]] = [str(x) for x in r.get_subreddit(subreddits[index]).get_top(limit=10)]
 
-# Code below is for debugging purposes
+# E-mail functionality
 for k, v in submissions.iteritems():
 	print k,v
 
+hostname = socket.gethostname()
+sender = "lazyreddit@" + hostname
+now = datetime.datetime.now() # Gets the current date for e-mail's subject
+currentdate = now.strftime("%d-%m-%Y") # formats the date properly
+# The actual message to be sent
+message = """From: Lazyreddit <""" + sender + """>
+To: A Redditor <""" + email + """>
+Subject: Your top subreddit submssions on """ + currentdate + """
+
+""" + str(submissions['linux'])
+
+# Sending the message
+try:
+    smtpObj = smtplib.SMTP('localhost') # assuming you have a local SMTP server
+    smtpObj.sendmail(sender, email, message)
+    print "Successfully sent e-mail!"
+except SMTPException:
+    print "Error: unable to send e-mail!"
+
+# Code below is for debugging purposes
 for index in range(len(subreddits)):
 	print 'Subreddit', subreddits[index]
+
+
