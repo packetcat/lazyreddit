@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import reddit, ConfigParser, smtplib, socket, datetime
+import narwal, ConfigParser, smtplib, socket, datetime
 from subprocess import call
 
 # Read config file
@@ -13,13 +13,13 @@ email = config.get('main', 'email')
 subreddits = config.get('main', 'subreddits')
 
 # Set user agent as needed
-r = reddit.Reddit(user_agent="lazyreddit")
+r = narwal.connect(user_agent="lazyreddit")
 # parse subreddits further
 
 subreddits = [y.strip().lower() for y in subreddits.split(',')]
 submissions = {}
 for index in range(len(subreddits)):
-    submissions[subreddits[index]] = [str(x) for x in r.get_subreddit(subreddits[index]).get_top(limit=10)]
+    submissions[subreddits[index]] = [str(x) for x in r.hot(sr=subreddits[index], limit=10)]
 
 # E-mail functionality
 for k, v in submissions.iteritems():
@@ -43,9 +43,3 @@ try:
     print "Successfully sent e-mail!"
 except SMTPException:
     print "Error: unable to send e-mail!"
-
-# Code below is for debugging purposes
-for index in range(len(subreddits)):
-	print 'Subreddit', subreddits[index]
-
-
