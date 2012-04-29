@@ -11,6 +11,7 @@ config.read('lazyreddit.cfg')
 
 email = config.get('main', 'email')
 subreddits = config.get('main', 'subreddits')
+smtpserver = config.get('main', 'smtpserver')
 
 # Set user agent as needed
 r = narwal.connect(user_agent="lazyreddit")
@@ -38,7 +39,7 @@ Subject: Your top subreddit submssions on """ + currentdate + """
 
 # Sending the message
 try:
-    smtpObj = smtplib.SMTP('localhost') # assuming you have a local SMTP server
+    smtpObj = smtplib.SMTP(smtpserver)
     smtpObj.sendmail(sender, email, message)
     print "Successfully sent e-mail!"
 except SMTPException:
