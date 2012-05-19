@@ -7,7 +7,6 @@ import smtplib
 import socket
 import datetime
 import pprint
-from subprocess import call
 
 # Read config file
 
