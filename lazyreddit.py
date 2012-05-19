@@ -7,27 +7,44 @@ import smtplib
 import socket
 import datetime
 import pprint
+import sys
+import argparse
 import os
+
+# Variables
+subreddits = []
+# Argument stuff
+parser = argparse.ArgumentParser(description='lazyreddit - A program that e-mails you top posts from chosen subreddits.')
+parser.add_argument('--version', action='version', version='lazyreddit v0.1')
+parser.add_argument('--noconfigfile', action='store', default="False", help='Use commandline arguments instead of a config file, set as "False" by default')
+parser.add_argument('-e', action='store', help='Specify the e-mail to send the submissions to.', type=str, required=True)
+parser.add_argument('-subs', action='append', help='Specify the subreddits to get submissions from, use multiple times to specify multiple subreddits.', required=True)
+parser.add_argument('-smtpserver', action='store', help='Specify the SMTP server to use to send the e-mail.', required=True)
+args = vars(parser.parse_args())
 
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
+cli_options = args['noconfigfile']
 
-# Check to see if config file exists and then loads it
-if os.path.isfile(configfilepath) == False:
-    print "A config file does not exist, get one from here - http://goo.gl/znYqb"
+if cli_options == "True":
+    print "using CLI args instead of config file"
+    email = args['e']
+    subreddits = args['subs']
+    smtpserver = args['smtpserver']
 else:
-    config.read('lazyreddit.cfg')
-
-# Set values from config file
-email = config.get('main', 'email')
-subreddits = config.get('main', 'subreddits')
-smtpserver = config.get('main', 'smtpserver')
+    if os.path.isfile(configfilepath) == False:
+        print "A config file does not exist, get one from here - http://goo.gl/znYqb"
+    else:
+        config.read('lazyreddit.cfg')
+    email = config.get('main', 'email')
+    subreddits = config.get('main', 'subreddits')
+    smtpserver = config.get('main', 'smtpserver')
+    subreddits = [y.strip().lower() for y in subreddits.split(',')]
 
 # Set user agent as needed
 r = narwal.connect(user_agent="lazyreddit")
 
 # parse subreddits further
-subreddits = [y.strip().lower() for y in subreddits.split(',')]
 submissions = {}
 for index in range(len(subreddits)):
     submissions[subreddits[index]] = ([str(x) for x in
