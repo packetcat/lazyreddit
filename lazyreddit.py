@@ -6,6 +6,7 @@ import ConfigParser
 import smtplib
 import socket
 import datetime
+import pprint
 from subprocess import call
 
 # Read config file
@@ -37,7 +38,7 @@ message = """From: Lazyreddit <""" + sender + """>
 To: A Redditor <""" + email + """>
 Subject: Your top subreddit submssions on """ + currentdate + """
 
-""" + str(submissions)
+""" + pprint.pformat(submissions, 6)
 
 # Sending the message
 try:
