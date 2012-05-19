@@ -40,7 +40,7 @@ message = """From: Lazyreddit <""" + sender + """>
 To: A Redditor <""" + email + """>
 Subject: Your top subreddit submssions on """ + currentdate + """
 
-""" + str(submissions['linux'])
+""" + str(submissions)
 
 # Sending the message
 try:
