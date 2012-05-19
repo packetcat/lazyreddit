@@ -28,9 +28,6 @@ for index in range(len(subreddits)):
                                       r.hot(sr=subreddits[index], limit=10)])
 
 # E-mail functionality
-for k, v in submissions.iteritems():
-    print k, v
-
 hostname = socket.gethostname()
 sender = "lazyreddit@" + hostname
 now = datetime.datetime.now()   # the current date for e-mail's subject
