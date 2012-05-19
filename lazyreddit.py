@@ -7,12 +7,18 @@ import smtplib
 import socket
 import datetime
 import pprint
+import os
 
-# Read config file
-
+configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
-config.read('lazyreddit.cfg')
 
+# Check to see if config file exists and then loads it
+if os.path.isfile(configfilepath) == False:
+    print "A config file does not exist, get one from here - http://goo.gl/znYqb"
+else:
+    config.read('lazyreddit.cfg')
+
+# Set values from config file
 email = config.get('main', 'email')
 subreddits = config.get('main', 'subreddits')
 smtpserver = config.get('main', 'smtpserver')
