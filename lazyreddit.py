@@ -67,5 +67,5 @@ try:
     smtpObj = smtplib.SMTP(smtpserver)
     smtpObj.sendmail(sender, email, message)
     print "Successfully sent e-mail!"
-except SMTPException:
+except smtplib.SMTPException:
     print "Error: unable to send e-mail!"
