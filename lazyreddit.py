@@ -34,6 +34,7 @@ if cli_options == "True":
 else:
     if os.path.isfile(configfilepath) == False:
         print "A config file does not exist, get one from here - http://goo.gl/znYqb"
+        raise SystemExit
     else:
         config.read('lazyreddit.cfg')
     email = config.get('main', 'email')
