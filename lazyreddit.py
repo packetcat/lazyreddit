@@ -7,7 +7,6 @@ import smtplib
 import socket
 import datetime
 import pprint
-import sys
 import argparse
 import os
 
