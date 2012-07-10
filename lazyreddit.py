@@ -13,6 +13,8 @@ import os
 # Variables
 subreddits = []
 submissions = {}
+# Set user agent as needed
+r = narwal.connect(user_agent="lazyreddit")
 # Argument stuff
 parser = argparse.ArgumentParser(description='lazyreddit - A program that e-mails you top posts from chosen subreddits.')
 parser.add_argument('--version', action='version', version='lazyreddit v0.2')
@@ -41,9 +43,6 @@ else:
     subreddits = config.get('main', 'subreddits')
     smtpserver = config.get('main', 'smtpserver')
     subreddits = [y.strip().lower() for y in subreddits.split(',')]
-
-# Set user agent as needed
-r = narwal.connect(user_agent="lazyreddit")
 
 # parse subreddits further
 for subreddits in subreddits:
