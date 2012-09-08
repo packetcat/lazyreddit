@@ -9,10 +9,12 @@ import datetime
 import pprint
 import argparse
 import os
+import re
 
 # Variables
 subreddits = []
 submissions = {}
+trueregex = re.compile("true", re.I|re.M)
 # Set user agent as needed
 r = narwal.connect(user_agent="lazyreddit")
 # Argument stuff
@@ -26,9 +28,9 @@ args = parser.parse_args()
 
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
-cli_options = args.noconfigfile
+cli_options = re.match(trueregex, args.noconfigfile)
 
-if cli_options == "True":
+if cli_options:
     print "using CLI args instead of config file"
     email = args.e
     subreddits = args.subs
