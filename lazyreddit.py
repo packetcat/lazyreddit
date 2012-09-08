@@ -40,7 +40,7 @@ else:
         print "A config file does not exist, get one from here - http://goo.gl/znYqb"
         raise SystemExit
     else:
-        config.read('lazyreddit.cfg')
+        config.read(configfilepath)
     email = config.get('main', 'email')
     subreddits = config.get('main', 'subreddits')
     smtpserver = config.get('main', 'smtpserver')
