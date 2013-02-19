@@ -59,7 +59,7 @@ currentdate = now.strftime("%d-%m-%Y")   # formats the date properly
 # The actual message to be sent
 message = """From: Lazyreddit <""" + sender + """>
 To: A Redditor <""" + email + """>
-Subject: Your top subreddit submssions on """ + currentdate + """
+Subject: Your top subreddit submissions on """ + currentdate + """
 
 """ + pprint.pformat(submissions, 6)
 
