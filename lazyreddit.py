@@ -9,10 +9,12 @@ import datetime
 import pprint
 import argparse
 import os
+import re
 
 # Variables
 subreddits = []
 submissions = {}
+trueregex = re.compile("true", re.I|re.M)
 # Set user agent as needed
 r = narwal.connect(user_agent="lazyreddit")
 # Argument stuff
@@ -26,9 +28,9 @@ args = parser.parse_args()
 
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
-cli_options = args.noconfigfile
+cli_options = re.match(trueregex, args.noconfigfile)
 
-if cli_options == "True":
+if cli_options:
     print "using CLI args instead of config file"
     email = args.e
     subreddits = args.subs
@@ -38,7 +40,7 @@ else:
         print "A config file does not exist, get one from here - http://goo.gl/znYqb"
         raise SystemExit
     else:
-        config.read('lazyreddit.cfg')
+        config.read(configfilepath)
     email = config.get('main', 'email')
     subreddits = config.get('main', 'subreddits')
     smtpserver = config.get('main', 'smtpserver')
@@ -57,7 +59,7 @@ currentdate = now.strftime("%d-%m-%Y")   # formats the date properly
 # The actual message to be sent
 message = """From: Lazyreddit <""" + sender + """>
 To: A Redditor <""" + email + """>
-Subject: Your top subreddit submssions on """ + currentdate + """
+Subject: Your top subreddit submissions on """ + currentdate + """
 
 """ + pprint.pformat(submissions, 6)
 
