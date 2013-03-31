@@ -7,7 +7,6 @@ import ConfigParser
 import socket
 import datetime
 import pprint
-import argparse
 import os
 
 # Variables
