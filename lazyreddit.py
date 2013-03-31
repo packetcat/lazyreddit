@@ -38,11 +38,10 @@ for subreddits in subreddits:
                                       r.hot(sr=subreddits, limit=10)])
 
 # E-mail functionality
-now = datetime.datetime.now()   # the current date for e-mail's subject
-currentdate = now.strftime("%d-%m-%Y")   # formats the date properly
+now = datetime.datetime.now().strftime("%d-%m-%Y")   # the current date for e-mail's subject
 # The actual message to be sent
 message = MIMEText(pprint.pformat(submissions, 6))
-message['Subject'] = "Your top subreddit submissions on %s" % currentdate
+message['Subject'] = "Your top subreddit submissions on %s" % now
 message['From'] = fromemail
 message['To'] = destemail
 
