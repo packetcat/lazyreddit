@@ -1,0 +1,7 @@
+[main]
+
+# E-mail address to send mail to
+email = testing@example.com
+smtpserver = localhost
+# List of subreddits
+subreddits = aww , pics
