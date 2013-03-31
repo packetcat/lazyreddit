@@ -2,45 +2,28 @@
 # -*- coding: utf-8 -*-
 
 import narwal
-import ConfigParser
 import smtplib
+import ConfigParser
 import socket
 import datetime
 import pprint
 import argparse
 import os
-import re
 
 # Variables
 subreddits = []
 submissions = {}
-trueregex = re.compile("true", re.I|re.M)
+
 # Set user agent as needed
 r = narwal.connect(user_agent="lazyreddit")
-# Argument stuff
-parser = argparse.ArgumentParser(description='lazyreddit - A program that e-mails you top posts from chosen subreddits.')
-parser.add_argument('--version', action='version', version='lazyreddit v0.2')
-parser.add_argument('--noconfigfile', action='store', default="False", help='Use commandline arguments instead of a config file, set as "False" by default')
-parser.add_argument('-e', action='store', help='Specify the e-mail to send the submissions to.', type=str)
-parser.add_argument('-subs', action='append', help='Specify the subreddits to get submissions from, use multiple times to specify multiple subreddits.')
-parser.add_argument('-smtpserver', action='store', help='Specify the SMTP server to use to send the e-mail.')
-args = parser.parse_args()
-
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
-cli_options = re.match(trueregex, args.noconfigfile)
 
-if cli_options:
-    print "using CLI args instead of config file"
-    email = args.e
-    subreddits = args.subs
-    smtpserver = args.smtpserver
+if os.path.isfile(configfilepath) == False:
+    print "A config file does not exist, get one from here - http://goo.gl/znYqb"
+    raise SystemExit
 else:
-    if os.path.isfile(configfilepath) == False:
-        print "A config file does not exist, get one from here - http://goo.gl/znYqb"
-        raise SystemExit
-    else:
-        config.read(configfilepath)
+    config.read(configfilepath)
     email = config.get('main', 'email')
     subreddits = config.get('main', 'subreddits')
     smtpserver = config.get('main', 'smtpserver')
