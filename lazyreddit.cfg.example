@@ -1,7 +1,13 @@
 [main]
-
 # E-mail address to send mail to
-email = testing@example.com
-smtpserver = localhost
+destemail = testing@example.com
 # List of subreddits
 subreddits = aww , pics
+
+# SMTP related settings
+[smtp]
+smtpserver = localhost
+username = example
+portnumber = 587
+password = hunter2
+fromemail = noreply@example.com

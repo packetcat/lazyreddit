@@ -4,10 +4,10 @@
 import narwal
 import smtplib
 import ConfigParser
-import socket
 import datetime
 import pprint
 import os
+from email.mime.text import MIMEText
 
 # Variables
 subreddits = []
@@ -19,13 +19,17 @@ configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
 
 if os.path.isfile(configfilepath) == False:
-    print "A config file does not exist, get one from here - http://goo.gl/znYqb"
+    print "A config file does not exist, see source for an example."
     raise SystemExit
 else:
     config.read(configfilepath)
-    email = config.get('main', 'email')
+    destemail = config.get('main', 'destemail')
     subreddits = config.get('main', 'subreddits')
-    smtpserver = config.get('main', 'smtpserver')
+    smtpserver = config.get('smtp', 'smtpserver')
+    smtpusername = config.get('smtp', 'username')
+    smtppassword = config.get('smtp', 'password')
+    smtpport = config.get('smtp', 'portnumber')
+    fromemail = config.get('smtp', 'fromemail')
     subreddits = [y.strip().lower() for y in subreddits.split(',')]
 
 # parse subreddits further
@@ -34,21 +38,21 @@ for subreddits in subreddits:
                                       r.hot(sr=subreddits, limit=10)])
 
 # E-mail functionality
-hostname = socket.gethostname()
-sender = "lazyreddit@" + hostname
 now = datetime.datetime.now()   # the current date for e-mail's subject
 currentdate = now.strftime("%d-%m-%Y")   # formats the date properly
 # The actual message to be sent
-message = """From: Lazyreddit <""" + sender + """>
-To: A Redditor <""" + email + """>
-Subject: Your top subreddit submissions on """ + currentdate + """
-
-""" + pprint.pformat(submissions, 6)
+message = MIMEText(pprint.pformat(submissions, 6))
+message['Subject'] = "Your top subreddit submissions on %s" % currentdate
+message['From'] = fromemail
+message['To'] = destemail
 
 # Sending the message
 try:
-    smtpObj = smtplib.SMTP(smtpserver)
-    smtpObj.sendmail(sender, email, message)
+    smtpObj = smtplib.SMTP(smtpserver, smtpport)
+    smtpObj.starttls()
+    smtpObj.login(smtpusername, smtppassword)
+    smtpObj.sendmail(message['From'], message['To'], message.as_string())
     print "Successfully sent e-mail!"
+    smtpObj.quit()
 except smtplib.SMTPException:
     print "Error: unable to send e-mail!"
