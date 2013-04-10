@@ -18,7 +18,7 @@ r = narwal.connect(user_agent="lazyreddit")
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
 
-if os.path.isfile(configfilepath) == False:
+if os.path.isfile(configfilepath) is False:
     print "A config file does not exist, see source for an example."
     raise SystemExit
 else:
@@ -35,7 +35,7 @@ else:
 # parse subreddits further
 for subreddits in subreddits:
     submissions[subreddits] = ([str(x) for x in
-                                      r.hot(sr=subreddits, limit=10)])
+                                r.hot(sr=subreddits, limit=10)])
 
 # E-mail functionality
 now = datetime.datetime.now().strftime("%d-%m-%Y")   # the current date for e-mail's subject
