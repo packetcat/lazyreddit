@@ -2,71 +2,56 @@
 # -*- coding: utf-8 -*-
 
 import narwal
-import ConfigParser
 import smtplib
-import socket
+import ConfigParser
 import datetime
 import pprint
-import argparse
 import os
-import re
+from email.mime.text import MIMEText
 
 # Variables
 subreddits = []
 submissions = {}
-trueregex = re.compile("true", re.I|re.M)
+
 # Set user agent as needed
 r = narwal.connect(user_agent="lazyreddit")
-# Argument stuff
-parser = argparse.ArgumentParser(description='lazyreddit - A program that e-mails you top posts from chosen subreddits.')
-parser.add_argument('--version', action='version', version='lazyreddit v0.2')
-parser.add_argument('--noconfigfile', action='store', default="False", help='Use commandline arguments instead of a config file, set as "False" by default')
-parser.add_argument('-e', action='store', help='Specify the e-mail to send the submissions to.', type=str)
-parser.add_argument('-subs', action='append', help='Specify the subreddits to get submissions from, use multiple times to specify multiple subreddits.')
-parser.add_argument('-smtpserver', action='store', help='Specify the SMTP server to use to send the e-mail.')
-args = parser.parse_args()
-
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = ConfigParser.ConfigParser()
-cli_options = re.match(trueregex, args.noconfigfile)
 
-if cli_options:
-    print "using CLI args instead of config file"
-    email = args.e
-    subreddits = args.subs
-    smtpserver = args.smtpserver
+if os.path.isfile(configfilepath) is False:
+    print "A config file does not exist, see source for an example."
+    raise SystemExit
 else:
-    if os.path.isfile(configfilepath) == False:
-        print "A config file does not exist, get one from here - http://goo.gl/znYqb"
-        raise SystemExit
-    else:
-        config.read(configfilepath)
-    email = config.get('main', 'email')
+    config.read(configfilepath)
+    destemail = config.get('main', 'destemail')
     subreddits = config.get('main', 'subreddits')
-    smtpserver = config.get('main', 'smtpserver')
+    smtpserver = config.get('smtp', 'smtpserver')
+    smtpusername = config.get('smtp', 'username')
+    smtppassword = config.get('smtp', 'password')
+    smtpport = config.get('smtp', 'portnumber')
+    fromemail = config.get('smtp', 'fromemail')
     subreddits = [y.strip().lower() for y in subreddits.split(',')]
 
 # parse subreddits further
 for subreddits in subreddits:
     submissions[subreddits] = ([str(x) for x in
-                                      r.hot(sr=subreddits, limit=10)])
+                                r.hot(sr=subreddits, limit=10)])
 
 # E-mail functionality
-hostname = socket.gethostname()
-sender = "lazyreddit@" + hostname
-now = datetime.datetime.now()   # the current date for e-mail's subject
-currentdate = now.strftime("%d-%m-%Y")   # formats the date properly
+now = datetime.datetime.now().strftime("%d-%m-%Y")   # the current date for e-mail's subject
 # The actual message to be sent
-message = """From: Lazyreddit <""" + sender + """>
-To: A Redditor <""" + email + """>
-Subject: Your top subreddit submissions on """ + currentdate + """
-
-""" + pprint.pformat(submissions, 6)
+message = MIMEText(pprint.pformat(submissions, 6))
+message['Subject'] = "Your top subreddit submissions on %s" % now
+message['From'] = fromemail
+message['To'] = destemail
 
 # Sending the message
 try:
-    smtpObj = smtplib.SMTP(smtpserver)
-    smtpObj.sendmail(sender, email, message)
+    smtpObj = smtplib.SMTP(smtpserver, smtpport)
+    smtpObj.starttls()
+    smtpObj.login(smtpusername, smtppassword)
+    smtpObj.sendmail(message['From'], message['To'], message.as_string())
     print "Successfully sent e-mail!"
+    smtpObj.quit()
 except smtplib.SMTPException:
     print "Error: unable to send e-mail!"
