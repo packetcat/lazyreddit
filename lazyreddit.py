@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import narwal
+import praw
 import smtplib
-import ConfigParser
+import configparser
 import datetime
 import pprint
 import os
@@ -14,12 +13,12 @@ subreddits = []
 submissions = {}
 
 # Set user agent as needed
-r = narwal.connect(user_agent="lazyreddit")
+r = praw.Reddit(user_agent='lazyreddit-nextgen')
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 
 if os.path.isfile(configfilepath) is False:
-    print "A config file does not exist, see source for an example."
+    print ("A config file does not exist, see source for an example.")
     raise SystemExit
 else:
     config.read(configfilepath)
@@ -46,12 +45,9 @@ message['From'] = fromemail
 message['To'] = destemail
 
 # Sending the message
-try:
-    smtpObj = smtplib.SMTP(smtpserver, smtpport)
-    smtpObj.starttls()
-    smtpObj.login(smtpusername, smtppassword)
-    smtpObj.sendmail(message['From'], message['To'], message.as_string())
-    print "Successfully sent e-mail!"
-    smtpObj.quit()
-except smtplib.SMTPException:
-    print "Error: unable to send e-mail!"
+smtpObj = smtplib.SMTP(smtpserver, smtpport)
+smtpObj.starttls()
+smtpObj.login(smtpusername, smtppassword)
+smtpObj.sendmail(message['From'], message['To'], message.as_string())
+print ("Successfully sent e-mail!")
+smtpObj.quit()
