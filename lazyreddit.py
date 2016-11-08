@@ -10,8 +10,7 @@ from email.mime.text import MIMEText
 
 # Variables
 subreddits = []
-submissions = {}
-
+submissions_final = []
 # Set user agent as needed
 r = praw.Reddit(user_agent='lazyreddit-nextgen')
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
@@ -31,23 +30,30 @@ else:
     fromemail = config.get('smtp', 'fromemail')
     subreddits = [y.strip().lower() for y in subreddits.split(',')]
 
-# parse subreddits further
+def gethotposts(subreddits_list):
+    # get subreddit object
+    subreddit_data = r.get_subreddit(subreddits_list)
+    # get hot posts generator object
+    hot_posts = subreddit_data.get_top(limit=10)
+    # lets get the output finally
+    for submissions in hot_posts:
+        text = str(submissions)
+    return text
+
 for subreddits in subreddits:
-    submissions[subreddits] = ([str(x) for x in
-                                r.hot(sr=subreddits, limit=10)])
+    submissions_final.append(gethotposts(subreddits))
 
 # E-mail functionality
 now = datetime.datetime.now().strftime("%d-%m-%Y")   # the current date for e-mail's subject
 # The actual message to be sent
-message = MIMEText(pprint.pformat(submissions, 6))
+message = MIMEText(pprint.pformat(submissions_final, 6))
 message['Subject'] = "Your top subreddit submissions on %s" % now
 message['From'] = fromemail
 message['To'] = destemail
-
+print(message)
 # Sending the message
 smtpObj = smtplib.SMTP(smtpserver, smtpport)
 smtpObj.starttls()
 smtpObj.login(smtpusername, smtppassword)
 smtpObj.sendmail(message['From'], message['To'], message.as_string())
-print ("Successfully sent e-mail!")
 smtpObj.quit()
