@@ -3,8 +3,8 @@ lazyreddit
 
 ## Dependencies ##
 
-- Python (tested on 2.6.6 and 2.7.3)
-- narwal (installable via pip)
+- Python (tested on 3.5.2)
+- PRAW (installable with pip)
 - A SMTP server (localhost or otherwise)
 
 ## Typical Usage ##
