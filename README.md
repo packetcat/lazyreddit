@@ -3,7 +3,8 @@ lazyreddit
 
 ## Dependencies ##
 
-- Python (tested on 3.5.2)
+- Python 3 (tested on 3.5.2) [This is $CURRENTYEAR, I don't care about Python 2
+  anymore.]
 - PRAW (installable with pip)
 - A SMTP server (localhost or otherwise)
 
