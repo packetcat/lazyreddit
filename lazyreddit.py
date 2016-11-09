@@ -34,26 +34,26 @@ def gethotposts(subreddits_list):
     # get subreddit object
     subreddit_data = r.get_subreddit(subreddits_list)
     # get hot posts generator object
-    hot_posts = subreddit_data.get_top(limit=10)
+    hot_posts = subreddit_data.get_hot()
     # lets get the output finally
     for submissions in hot_posts:
         text = str(submissions)
-    return text
+        print(text)
 
 for subreddits in subreddits:
-    submissions_final.append(gethotposts(subreddits))
+    gethotposts(subreddits)
 
 # E-mail functionality
-now = datetime.datetime.now().strftime("%d-%m-%Y")   # the current date for e-mail's subject
+#now = datetime.datetime.now().strftime("%d-%m-%Y")   # the current date for e-mail's subject
 # The actual message to be sent
-message = MIMEText(pprint.pformat(submissions_final, 6))
-message['Subject'] = "Your top subreddit submissions on %s" % now
-message['From'] = fromemail
-message['To'] = destemail
-print(message)
+#message = MIMEText(pprint.pformat(submissions_final, 6))
+#message['Subject'] = "Your top subreddit submissions on %s" % now
+#message['From'] = fromemail
+#message['To'] = destemail
+#print(message)
 # Sending the message
-smtpObj = smtplib.SMTP(smtpserver, smtpport)
-smtpObj.starttls()
-smtpObj.login(smtpusername, smtppassword)
-smtpObj.sendmail(message['From'], message['To'], message.as_string())
-smtpObj.quit()
+#smtpObj = smtplib.SMTP(smtpserver, smtpport)
+#smtpObj.starttls()
+#smtpObj.login(smtpusername, smtppassword)
+#smtpObj.sendmail(message['From'], message['To'], message.as_string())
+#smtpObj.quit()
