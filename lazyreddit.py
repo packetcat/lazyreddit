@@ -21,13 +21,13 @@ if os.path.isfile(configfilepath) is False:
     raise SystemExit
 else:
     config.read(configfilepath)
-    destemail = config.get('main', 'destemail')
+    #destemail = config.get('main', 'destemail')
     subreddits = config.get('main', 'subreddits')
-    smtpserver = config.get('smtp', 'smtpserver')
-    smtpusername = config.get('smtp', 'username')
-    smtppassword = config.get('smtp', 'password')
-    smtpport = config.get('smtp', 'portnumber')
-    fromemail = config.get('smtp', 'fromemail')
+    #smtpserver = config.get('smtp', 'smtpserver')
+    #smtpusername = config.get('smtp', 'username')
+    #smtppassword = config.get('smtp', 'password')
+    #smtpport = config.get('smtp', 'portnumber')
+    #fromemail = config.get('smtp', 'fromemail')
     subreddits = [y.strip().lower() for y in subreddits.split(',')]
 
 def gethotposts(subreddits_list):
