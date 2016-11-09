@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import praw
-import smtplib
+#import smtplib
 import configparser
-import datetime
-import pprint
+#import datetime
+#import pprint
 import os
-from email.mime.text import MIMEText
+#from email.mime.text import MIMEText
 
 # Variables
 subreddits = []
