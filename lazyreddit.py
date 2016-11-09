@@ -12,7 +12,7 @@ import os
 subreddits = []
 submissions_final = []
 # Set user agent as needed
-r = praw.Reddit(user_agent='lazyreddit-nextgen')
+r = praw.Reddit(user_agent='lazyreddit-nextgen', output_chars_limit='-1')
 configfilepath = os.path.join(os.getcwd(), "lazyreddit.cfg")
 config = configparser.ConfigParser()
 
